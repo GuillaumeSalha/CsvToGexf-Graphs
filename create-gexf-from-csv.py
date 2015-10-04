@@ -6,6 +6,10 @@ import networkx as nx
 import geojson
 from geojson import LineString, Feature, FeatureCollection
 
+
+
+# Retrieve nodes and edges from csv files
+
 graph = nx.Graph()
 
 with open('roads-nodes.csv', 'rb') as csvfile:
@@ -23,7 +27,16 @@ with open('roads-edges3.csv', 'rb') as csvfile:
 			print 16 - float(edge[0])
 		graph.add_edge(int(edge[2]), int(edge[3]), IndiQuiet=16-float(edge[0]), length=float(edge[4]),car=int(edge[5]),carReverse=int(edge[6]),bike=int(edge[7]),bikeReverse=int(edge[8]),foot=int(edge[9]),wkt=wkt)
 
-# nx.write_gexf(graph, "quietest-roads.gexf")
+
+
+# Save the graph in .gexf :
+
+nx.write_gexf(graph, "quietest-roads.gexf")
+
+
+
+# Get optimal paths (shortest, quietest)
+# (see ComplexCity work)
 
 featureCollection = []
 latitude = nx.get_node_attributes(graph,'latitude')
@@ -48,7 +61,6 @@ quietness1 = quietness1/(len(shortest)-1)
 print 'shortest distance is ',length1
 print 'shortest quietness is ',quietness1
 
-
 quietest = nx.shortest_path(graph, source=1446811936, target=601662226, weight='IndiQuiet')
 length2 = 0
 quietness2 = 0
@@ -65,8 +77,6 @@ for i in range(0,len(quietest)-1):
 	feature = Feature(geometry=linestring, properties={'type':'quietest','distance':length,'quietness':quietness})
 	featureCollection.append(feature)
 
-
-
 quietness2 = quietness2/(len(quietest)-1)
 print 'quietest distance is ',length2
 print 'quietest quietness is ', quietness2
@@ -74,6 +84,9 @@ print 'quietest quietness is ', quietness2
 print 'quiestest is ',((length2/length1) - 1)*100,'% longer than shortest'
 print 'quiestest is ',((quietness1/quietness2) - 1)*100,'% quieter than shortest'
 
+
+
+# Save paths in .geojson, in order to plot it with CartoDB
 
 featureCollection = FeatureCollection(featureCollection)
 dump = geojson.dumps(featureCollection, sort_keys=True)
