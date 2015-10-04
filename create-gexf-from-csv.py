@@ -72,7 +72,7 @@ print 'quietest distance is ',length2
 print 'quietest quietness is ', quietness2
 
 print 'quiestest is ',((length2/length1) - 1)*100,'% longer than shortest'
-print 'quiestest is ',((quietness2/quietness1) - 1)*100,'% quieter than shortest'
+print 'quiestest is ',((quietness1/quietness2) - 1)*100,'% quieter than shortest'
 
 
 featureCollection = FeatureCollection(featureCollection)
